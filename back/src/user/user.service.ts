@@ -81,7 +81,7 @@ export class UserService {
         ? Buffer.from(params.encodedProfilePicture, 'base64')
         : undefined,
     };
-    return this.prisma.user.update({ where, data });
+    return await this.prisma.user.update({ where, data });
   }
 
   /**
@@ -89,9 +89,21 @@ export class UserService {
    * @param where The where clause
    * @returns The deleted user
    */
-  async delete(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.delete({
-      where,
-    });
+  async delete(id: number): Promise<User> {
+    const where = { id };
+    const deletedUser = await this.prisma.user
+      .delete({
+        where,
+      })
+      .catch((e) => {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2025') {
+            throw new NotFoundException('Usuário não encontrado');
+          }
+        }
+      });
+
+    if (!deletedUser) throw new NotFoundException('Usuário não encontrado');
+    return deletedUser;
   }
 }
