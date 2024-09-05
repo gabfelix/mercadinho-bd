@@ -1,4 +1,5 @@
 # mercadinho-bd
+Um sistema de gestão de inventário, pessoas e vendas para um mercado.
 
 ## Introdução
 O presente documento apresenta o desenvolvimento e implementação de um sistema de gerenciamento de supermercado para a disciplina de Banco de Dados da Universidade de Brasília.
