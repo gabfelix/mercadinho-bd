@@ -1,9 +1,10 @@
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
+@Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   /** Gets a specific user
    * @param userWhereUniqueInput - The unique identifier for the user

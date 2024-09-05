@@ -1,13 +1,31 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Get()
+  async findAll(): Promise<User[]> {
+    return await this.userService.many({});
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return await this.userService.user({ id });
+    return await this.userService.one({ id });
+  }
+
+  @Post()
+  async create(@Body() userData: Prisma.UserCreateInput): Promise<User> {
+    // TODO: Hash the password
+    return this.userService.create(userData);
   }
 }
