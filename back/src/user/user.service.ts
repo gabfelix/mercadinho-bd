@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, ExportUserDto, UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -15,12 +15,14 @@ export class UserService {
    * @param userWhereUniqueInput - The unique identifier for the user
    * @returns The matched user
    */
-  async one(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User> {
+  async one(
+    userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+  ): Promise<ExportUserDto> {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
     if (!user) throw new NotFoundException('Usuário não encontrado');
-    return user;
+    return this.prismaToExportDto(user);
   }
 
   /** Gets many users
@@ -33,29 +35,23 @@ export class UserService {
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<User[]> {
+  }): Promise<ExportUserDto[]> {
     const { cursor, where, orderBy } = params;
     // TODO: Error checking
-    return await this.prisma.user.findMany({
+    const users = await this.prisma.user.findMany({
       cursor,
       where,
       orderBy,
     });
+    return users.map((user) => this.prismaToExportDto(user));
   }
 
   /** Creates a new user
    * @param params - The data to create the user with
    * @returns The created user
    */
-  async create(params: CreateUserDto): Promise<User> {
-    const data: Prisma.UserCreateInput = {
-      name: params.name,
-      email: params.email,
-      password: params.password, // TODO: Password hashing
-      profilePicture: params.encodedProfilePicture
-        ? Buffer.from(params.encodedProfilePicture, 'base64')
-        : undefined,
-    };
+  async create(params: CreateUserDto): Promise<ExportUserDto> {
+    const data = this.dtoToPrisma(params);
     const user = await this.prisma.user.create({ data }).catch((e) => {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
@@ -68,10 +64,10 @@ export class UserService {
 
     if (!user) throw new BadRequestException('Erro ao criar usuário');
 
-    return user;
+    return this.prismaToExportDto(user);
   }
 
-  async update(id: number, params: UpdateUserDto): Promise<User> {
+  async update(id: number, params: UpdateUserDto): Promise<ExportUserDto> {
     const where: Prisma.UserWhereUniqueInput = { id };
     const data: Prisma.UserUpdateInput = {
       name: params.name,
@@ -81,7 +77,9 @@ export class UserService {
         ? Buffer.from(params.encodedProfilePicture, 'base64')
         : undefined,
     };
-    return await this.prisma.user.update({ where, data });
+    const updateUser = await this.prisma.user.update({ where, data });
+    if (!updateUser) throw new NotFoundException('Usuário não encontrado');
+    return this.prismaToExportDto(updateUser);
   }
 
   /**
@@ -89,7 +87,7 @@ export class UserService {
    * @param where The where clause
    * @returns The deleted user
    */
-  async delete(id: number): Promise<User> {
+  async delete(id: number): Promise<ExportUserDto> {
     const where = { id };
     const deletedUser = await this.prisma.user
       .delete({
@@ -104,6 +102,31 @@ export class UserService {
       });
 
     if (!deletedUser) throw new NotFoundException('Usuário não encontrado');
-    return deletedUser;
+    return this.prismaToExportDto(deletedUser);
   }
+
+  //#region private methods
+  /** Converts the Prisma-compatible user type to a DTO */
+  private prismaToExportDto(user: User): ExportUserDto {
+    return {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      encodedProfilePicture: user.profilePicture?.toString('base64'),
+    };
+  }
+
+  private dtoToPrisma(
+    user: CreateUserDto | UpdateUserDto,
+  ): Prisma.UserCreateInput {
+    return {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      profilePicture: user.encodedProfilePicture
+        ? Buffer.from(user.encodedProfilePicture, 'base64')
+        : undefined,
+    };
+  }
+  //#endregion
 }
