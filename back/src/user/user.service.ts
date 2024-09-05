@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -71,11 +71,16 @@ export class UserService {
     return user;
   }
 
-  async update(params: {
-    where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
-  }): Promise<User> {
-    const { where, data } = params;
+  async update(id: number, params: UpdateUserDto): Promise<User> {
+    const where: Prisma.UserWhereUniqueInput = { id };
+    const data: Prisma.UserUpdateInput = {
+      name: params.name,
+      email: params.email,
+      password: params.password,
+      profilePicture: params.encodedProfilePicture
+        ? Buffer.from(params.encodedProfilePicture, 'base64')
+        : undefined,
+    };
     return this.prisma.user.update({ where, data });
   }
 

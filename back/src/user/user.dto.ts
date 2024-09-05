@@ -4,3 +4,5 @@ export type CreateUserDto = {
   password: string;
   encodedProfilePicture?: string;
 };
+
+export type UpdateUserDto = Partial<CreateUserDto>;
