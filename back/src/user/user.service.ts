@@ -67,6 +67,10 @@ export class UserService {
     return this.prismaToExportDto(user);
   }
 
+  /** Updates a user
+   * @param id - The id of the user to update
+   * @param params - The data to update the user with
+   */
   async update(id: number, params: UpdateUserDto): Promise<ExportUserDto> {
     const where: Prisma.UserWhereUniqueInput = { id };
     const data: Prisma.UserUpdateInput = {
@@ -84,7 +88,7 @@ export class UserService {
 
   /**
    * Deletes a specific user
-   * @param where The where clause
+   * @param id The user's id
    * @returns The deleted user
    */
   async delete(id: number): Promise<ExportUserDto> {
