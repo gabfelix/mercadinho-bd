@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { Contact, Prisma } from '@prisma/client';
@@ -28,5 +30,18 @@ export class ContactController {
     @Body() prismaCreateData: Prisma.ContactCreateInput,
   ): Promise<Contact> {
     return this.contactService.create(prismaCreateData);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() prismaUpdateData: Prisma.ContactUpdateInput,
+  ): Promise<Contact> {
+    return this.contactService.update(id, prismaUpdateData);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<Contact> {
+    return this.contactService.delete(id);
   }
 }

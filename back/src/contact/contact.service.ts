@@ -46,4 +46,48 @@ export class ContactService {
 
     return createdContact;
   }
+
+  async update(id: number, data: Prisma.ContactUpdateInput): Promise<Contact> {
+    const updatedContact = await this.prismaService.contact
+      .update({
+        where: { id },
+        data,
+      })
+      .catch((e) => {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2002') {
+            const target = e.meta?.target?.[0] ?? '';
+            const field = target[0].toUpperCase() + target.slice(1);
+            throw new BadRequestException(`${field} já está em uso`);
+          }
+          if (e.code === 'P2025') {
+            throw new BadRequestException('Contato não encontrado');
+          }
+        }
+        throw e;
+      });
+    if (!updatedContact)
+      throw new BadRequestException('Erro ao atualizar contato');
+
+    return updatedContact;
+  }
+
+  async delete(id: number): Promise<Contact> {
+    const deletedContact = await this.prismaService.contact
+      .delete({
+        where: { id },
+      })
+      .catch((e) => {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2025') {
+            throw new BadRequestException('Contato não encontrado');
+          }
+        }
+        throw e;
+      });
+    if (!deletedContact)
+      throw new BadRequestException('Erro ao deletar contato');
+
+    return deletedContact;
+  }
 }
