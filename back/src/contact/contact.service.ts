@@ -6,6 +6,29 @@ import { PrismaService } from 'src/prisma.service';
 export class ContactService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async one(id: number): Promise<Contact> {
+    const where: Prisma.ContactWhereUniqueInput = { id };
+    const contact = await this.prismaService.contact.findUnique({
+      where,
+    });
+    if (!contact) throw new BadRequestException('Contato não encontrado');
+    return contact;
+  }
+
+  async many(params: {
+    cursor?: Prisma.ContactWhereUniqueInput;
+    where?: Prisma.ContactWhereInput;
+    orderBy?: Prisma.ContactOrderByWithRelationInput;
+  }): Promise<Contact[]> {
+    const { cursor, where, orderBy } = params;
+    const contacts = await this.prismaService.contact.findMany({
+      cursor,
+      where,
+      orderBy,
+    });
+    return contacts;
+  }
+
   async create(data: Prisma.ContactCreateInput): Promise<Contact> {
     const createdContact = await this.prismaService.contact
       .create({ data })
