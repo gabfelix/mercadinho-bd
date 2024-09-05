@@ -1,6 +1,10 @@
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
@@ -43,8 +47,19 @@ export class UserService {
    * @returns The created user
    */
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    // TODO: Error checking
-    return this.prisma.user.create({ data });
+    const user = await this.prisma.user.create({ data }).catch((e) => {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          const target = e.meta?.target?.[0] ?? '';
+          const field = target[0].toUpperCase() + target.slice(1);
+          throw new BadRequestException(`${field} já está em uso`);
+        }
+      }
+    });
+
+    if (!user) throw new BadRequestException('Erro ao criar usuário');
+
+    return user;
   }
 
   async update(params: {
