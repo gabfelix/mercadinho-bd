@@ -7,7 +7,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
+import { CreateUserDto } from './user.dto';
 
 @Controller('user')
 export class UserController {
@@ -24,8 +25,7 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() userData: Prisma.UserCreateInput): Promise<User> {
-    // TODO: Hash the password
+  async create(@Body() userData: CreateUserDto): Promise<User> {
     return this.userService.create(userData);
   }
 }

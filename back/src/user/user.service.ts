@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
+import { CreateUserDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -43,10 +44,18 @@ export class UserService {
   }
 
   /** Creates a new user
-   * @param data - The data to create the user with
+   * @param params - The data to create the user with
    * @returns The created user
    */
-  async create(data: Prisma.UserCreateInput): Promise<User> {
+  async create(params: CreateUserDto): Promise<User> {
+    const data: Prisma.UserCreateInput = {
+      name: params.name,
+      email: params.email,
+      password: params.password, // TODO: Password hashing
+      profilePicture: params.encodedProfilePicture
+        ? Buffer.from(params.encodedProfilePicture, 'base64')
+        : undefined,
+    };
     const user = await this.prisma.user.create({ data }).catch((e) => {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
