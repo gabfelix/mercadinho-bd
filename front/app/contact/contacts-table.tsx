@@ -22,16 +22,17 @@ import {
 } from "@/components/ui/table";
 import { PlusCircle } from "lucide-react";
 import { Contact } from "./page";
-import { useState } from "react";
+import { startTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { register } from "module";
 import { RequestInit } from "next/dist/server/web/spec-extension/request";
+import { useRouter } from "next/navigation";
 
 interface ContactsTableProps {
   contacts: Contact[];
 }
 
 export default function ContactsTable({ contacts }: ContactsTableProps) {
+  const router = useRouter();
   const form = useForm<Contact>();
 
   const onUpdateSubmit: SubmitHandler<Contact> = async (data) => {
@@ -40,14 +41,13 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     };
-
-    console.log(`POSTing ${JSON.stringify(data)}`);
-
     const res = await fetch(
       `http://localhost:3333/contact/${data.id}`,
       requestOptions
     );
-    console.log(`POST response: ${JSON.stringify(res.body)}`);
+    startTransition(() => {
+      router.refresh();
+    });
   };
 
   return (
@@ -83,7 +83,9 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
                 <DialogClose asChild>
                   <Button variant="outline">Cancelar</Button>
                 </DialogClose>
-                <Button type="submit">Salvar</Button>
+                <DialogClose asChild>
+                  <Button type="submit">Salvar</Button>
+                </DialogClose>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -129,7 +131,9 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
                 <DialogClose asChild>
                   <Button variant="outline">Cancelar</Button>
                 </DialogClose>
-                <Button type="submit">Alterar</Button>
+                <DialogClose asChild>
+                  <Button type="submit">Salvar</Button>
+                </DialogClose>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -144,17 +148,16 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
             </TableHeader>
             <TableBody>
               {contacts.map((contact) => (
-                <DialogTrigger
-                  asChild
-                  key={contact.id}
-                  onClick={() => {
-                    form.setValue("id", contact.id);
-                    form.setValue("name", contact.name);
-                    form.setValue("email", contact.email);
-                    form.setValue("phone", contact.phone);
-                  }}
-                >
-                  <TableRow key={contact.id}>
+                <DialogTrigger asChild key={contact.id}>
+                  <TableRow
+                    key={contact.id}
+                    onClick={() => {
+                      form.setValue("id", contact.id);
+                      form.setValue("name", contact.name);
+                      form.setValue("email", contact.email);
+                      form.setValue("phone", contact.phone);
+                    }}
+                  >
                     <TableCell>{contact.id}</TableCell>
                     <TableCell>{contact.name}</TableCell>
                     <TableCell>{contact.email}</TableCell>

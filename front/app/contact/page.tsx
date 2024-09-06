@@ -8,7 +8,9 @@ export interface Contact {
 }
 
 async function fetchContacts(): Promise<Contact[]> {
-  const res = await fetch("http://localhost:3333/contact");
+  const res = await fetch("http://localhost:3333/contact", {
+    cache: "no-store",
+  });
   return res.json();
 }
 
