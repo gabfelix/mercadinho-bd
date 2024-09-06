@@ -20,12 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PlusCircle } from "lucide-react";
-import { Contact } from "./page";
-import { startTransition } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { PlusCircle, TrashIcon } from "lucide-react";
 import { RequestInit } from "next/dist/server/web/spec-extension/request";
 import { useRouter } from "next/navigation";
+import { startTransition } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Contact } from "./page";
 
 interface ContactsTableProps {
   contacts: Contact[];
@@ -60,6 +60,22 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
       requestOptions
     );
     if (res.ok) {
+      startTransition(() => {
+        router.refresh();
+      });
+    }
+  };
+
+  const onRemoveButtonClick = async (id: number) => {
+    const requestOptions: RequestInit = {
+      method: "DELETE",
+    };
+    const res = await fetch(
+      `http://localhost:3333/contact/${id}`,
+      requestOptions
+    );
+    if (res.ok) {
+      form.reset();
       startTransition(() => {
         router.refresh();
       });
@@ -128,8 +144,20 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
         <Dialog>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Contatos</DialogTitle>
-              <DialogDescription>Editar contato</DialogDescription>
+              <div className="flex flex-row space-x-4">
+                <div>
+                  <DialogTitle>Contatos</DialogTitle>
+                  <DialogDescription>Editar contato</DialogDescription>
+                </div>
+                <DialogClose asChild>
+                  <Button
+                    variant="destructive"
+                    onClick={() => onRemoveButtonClick(form.getValues("id"))}
+                  >
+                    <TrashIcon className="w-4 h-4 mr-2" /> Remover
+                  </Button>
+                </DialogClose>
+              </div>
             </DialogHeader>
             <form
               action=""
