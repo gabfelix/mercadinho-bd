@@ -52,3 +52,5 @@ pnpm-lock.yaml
 # sqlite db
 prisma/dev.db
 prisma/dev.db-journal
+
+dist/
