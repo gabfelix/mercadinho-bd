@@ -25,6 +25,7 @@ import { Contact } from "./page";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { register } from "module";
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
 
 interface ContactsTableProps {
   contacts: Contact[];
@@ -33,8 +34,21 @@ interface ContactsTableProps {
 export default function ContactsTable({ contacts }: ContactsTableProps) {
   const form = useForm<Contact>();
 
-  const onUpdateSubmit: SubmitHandler<Contact> = (data) =>
-    console.log(JSON.stringify(data));
+  const onUpdateSubmit: SubmitHandler<Contact> = async (data) => {
+    const requestOptions: RequestInit = {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
+
+    console.log(`POSTing ${JSON.stringify(data)}`);
+
+    const res = await fetch(
+      `http://localhost:3333/contact/${data.id}`,
+      requestOptions
+    );
+    console.log(`POST response: ${JSON.stringify(res.body)}`);
+  };
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
@@ -84,7 +98,7 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
             </DialogHeader>
             <form
               action=""
-              onSubmit={() => form.handleSubmit(onUpdateSubmit)}
+              onSubmit={form.handleSubmit(onUpdateSubmit)}
               className="space-y-6"
             >
               <div className="grid grid-cols-4 items-center text-right gap-3">
@@ -134,6 +148,7 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
                   asChild
                   key={contact.id}
                   onClick={() => {
+                    form.setValue("id", contact.id);
                     form.setValue("name", contact.name);
                     form.setValue("email", contact.email);
                     form.setValue("phone", contact.phone);

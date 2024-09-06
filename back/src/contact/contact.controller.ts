@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import { Contact, Prisma } from '@prisma/client';
 import { ContactService } from './contact.service';
