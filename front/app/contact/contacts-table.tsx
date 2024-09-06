@@ -1,5 +1,7 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
+  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -9,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -17,32 +20,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog } from "@/components/ui/dialog";
-import { PlusCircle, Search } from "lucide-react";
-import { NextApiResponse } from "next";
-import { Label } from "@/components/ui/label";
+import { PlusCircle } from "lucide-react";
+import { Contact } from "./page";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { register } from "module";
 
-export interface Contact {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
+interface ContactsTableProps {
+  contacts: Contact[];
 }
 
-async function fetchContacts(): Promise<Contact[]> {
-  const res = await fetch("http://localhost:3333/contact");
-  return res.json();
-}
+export default function ContactsTable({ contacts }: ContactsTableProps) {
+  const form = useForm<Contact>();
 
-export default async function ContactsTable() {
-  const contacts: Contact[] = await fetchContacts();
+  const onUpdateSubmit: SubmitHandler<Contact> = (data) =>
+    console.log(JSON.stringify(data));
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
       <h1 className="text-3xl font-bold">Contatos</h1>
       <div className="flex items-center justify-end">
         <Dialog>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => form.reset()}>
               <PlusCircle className="w-4 h-4 mr-2" />
               Novo
             </Button>
@@ -82,18 +82,34 @@ export default async function ContactsTable() {
               <DialogTitle>Contatos</DialogTitle>
               <DialogDescription>Editar contato</DialogDescription>
             </DialogHeader>
-            <form action="" className="space-y-6">
+            <form
+              action=""
+              onSubmit={() => form.handleSubmit(onUpdateSubmit)}
+              className="space-y-6"
+            >
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="name">Nome</Label>
-                <Input className="col-span-3" id="name" />
+                <Input
+                  className="col-span-3"
+                  id="name"
+                  {...form.register("name")}
+                />
               </div>
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="email">Email</Label>
-                <Input className="col-span-3" id="email" />
+                <Input
+                  className="col-span-3"
+                  id="email"
+                  {...form.register("email")}
+                />
               </div>
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="telefone">Telefone</Label>
-                <Input className="col-span-3" id="telefone" />
+                <Input
+                  className="col-span-3"
+                  id="telefone"
+                  {...form.register("phone")}
+                />
               </div>
               <DialogFooter>
                 <DialogClose asChild>
@@ -114,7 +130,15 @@ export default async function ContactsTable() {
             </TableHeader>
             <TableBody>
               {contacts.map((contact) => (
-                <DialogTrigger asChild key={contact.id}>
+                <DialogTrigger
+                  asChild
+                  key={contact.id}
+                  onClick={() => {
+                    form.setValue("name", contact.name);
+                    form.setValue("email", contact.email);
+                    form.setValue("phone", contact.phone);
+                  }}
+                >
                   <TableRow key={contact.id}>
                     <TableCell>{contact.id}</TableCell>
                     <TableCell>{contact.name}</TableCell>
