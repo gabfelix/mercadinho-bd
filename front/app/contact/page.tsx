@@ -1,14 +1,9 @@
-import { TitleHeading } from "../../components/ui/headings";
+import ContactsTable from "./contacts-table";
 
-export default function UserIndex() {
+export default function Contacts() {
   return (
     <main>
-      <TitleHeading>Contatos</TitleHeading>
-      <p>Esta é a página dos contatos.</p>
-      <p>
-        Aqui, o usuário terá uma tabela com todos os contatos, onde ele poderá
-        clicar para editar um específico.
-      </p>
+      <ContactsTable />
     </main>
   );
 }
