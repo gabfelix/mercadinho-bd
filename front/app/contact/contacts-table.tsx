@@ -35,6 +35,20 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
   const router = useRouter();
   const form = useForm<Contact>();
 
+  const onCreateSubmit: SubmitHandler<Contact> = async (data) => {
+    const requestOptions: RequestInit = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
+    const res = await fetch("http://localhost:3333/contact", requestOptions);
+    if (res.ok) {
+      startTransition(() => {
+        router.refresh();
+      });
+    }
+  };
+
   const onUpdateSubmit: SubmitHandler<Contact> = async (data) => {
     const requestOptions: RequestInit = {
       method: "PATCH",
@@ -45,9 +59,11 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
       `http://localhost:3333/contact/${data.id}`,
       requestOptions
     );
-    startTransition(() => {
-      router.refresh();
-    });
+    if (res.ok) {
+      startTransition(() => {
+        router.refresh();
+      });
+    }
   };
 
   return (
@@ -66,18 +82,35 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
               <DialogTitle>Novo contato</DialogTitle>
               <DialogDescription>Criar um novo contato</DialogDescription>
             </DialogHeader>
-            <form action="" className="space-y-6">
+            <form
+              action=""
+              onSubmit={form.handleSubmit(onCreateSubmit)}
+              className="space-y-6"
+              {...form}
+            >
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="name">Nome</Label>
-                <Input className="col-span-3" id="name" />
+                <Input
+                  className="col-span-3"
+                  id="name"
+                  {...form.register("name")}
+                />
               </div>
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="email">Email</Label>
-                <Input className="col-span-3" id="email" />
+                <Input
+                  className="col-span-3"
+                  id="email"
+                  {...form.register("email")}
+                />
               </div>
               <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="telefone">Telefone</Label>
-                <Input className="col-span-3" id="telefone" />
+                <Input
+                  className="col-span-3"
+                  id="telefone"
+                  {...form.register("phone")}
+                />
               </div>
               <DialogFooter>
                 <DialogClose asChild>
