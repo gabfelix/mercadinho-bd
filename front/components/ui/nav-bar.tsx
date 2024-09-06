@@ -8,10 +8,10 @@ import {
 import { navigationMenuTriggerStyle } from "./navigation-menu";
 
 export function Navbar() {
-  const itemStyle = `${navigationMenuTriggerStyle()} bg-green-300 text-white font-bold`;
+  const itemStyle = `${navigationMenuTriggerStyle()} bg-primary text-white font-bold hover:text-gray-300 hover:bg-primary focus:bg-primary`;
   return (
     <NavigationMenu className="w-full">
-      <NavigationMenuList className="flex flex-row justify-center bg-green-300 py-2">
+      <NavigationMenuList className="flex flex-row justify-center py-2 bg-primary">
         <NavigationMenuItem>
           <NavigationMenuLink href="/" className={itemStyle}>
             Início
