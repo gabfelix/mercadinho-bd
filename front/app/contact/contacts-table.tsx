@@ -76,26 +76,56 @@ export default async function ContactsTable() {
         </Dialog>
       </div>
       <div className="border rounded-lg p-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Nome</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Telefone</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {contacts.map((contact) => (
-              <TableRow key={contact.id}>
-                <TableCell>{contact.id}</TableCell>
-                <TableCell>{contact.name}</TableCell>
-                <TableCell>{contact.email}</TableCell>
-                <TableCell>{contact.phone}</TableCell>
+        <Dialog>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Contatos</DialogTitle>
+              <DialogDescription>Editar contato</DialogDescription>
+            </DialogHeader>
+            <form action="" className="space-y-6">
+              <div className="grid grid-cols-4 items-center text-right gap-3">
+                <Label htmlFor="name">Nome</Label>
+                <Input className="col-span-3" id="name" />
+              </div>
+              <div className="grid grid-cols-4 items-center text-right gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input className="col-span-3" id="email" />
+              </div>
+              <div className="grid grid-cols-4 items-center text-right gap-3">
+                <Label htmlFor="telefone">Telefone</Label>
+                <Input className="col-span-3" id="telefone" />
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancelar</Button>
+                </DialogClose>
+                <Button type="submit">Alterar</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Nome</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Telefone</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {contacts.map((contact) => (
+                <DialogTrigger asChild key={contact.id}>
+                  <TableRow key={contact.id}>
+                    <TableCell>{contact.id}</TableCell>
+                    <TableCell>{contact.name}</TableCell>
+                    <TableCell>{contact.email}</TableCell>
+                    <TableCell>{contact.phone}</TableCell>
+                  </TableRow>
+                </DialogTrigger>
+              ))}
+            </TableBody>
+          </Table>
+        </Dialog>
       </div>
     </div>
   );
