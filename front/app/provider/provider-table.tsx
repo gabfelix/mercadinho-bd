@@ -70,6 +70,17 @@ export default function ProviderTable({ providers }: ProviderTableProps) {
     }
   };
 
+  const onRemoveButtonClick = async (id: number) => {
+    const res = await fetch(`http://localhost:3333/provider/${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      startTransition(() => {
+        router.refresh();
+      });
+    }
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-4">
       <h1 className="text-3xl font-bold">Fornecedores</h1>
@@ -128,7 +139,7 @@ export default function ProviderTable({ providers }: ProviderTableProps) {
               <DialogClose asChild>
                 <Button
                   variant="destructive"
-                  onClick={() => console.log("delet")}
+                  onClick={() => onRemoveButtonClick(form.getValues("id"))}
                 >
                   <TrashIcon className="w-4 h-4 mr-2" /> Remover
                 </Button>
