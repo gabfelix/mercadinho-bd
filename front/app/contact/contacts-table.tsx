@@ -171,16 +171,12 @@ export default function ContactsTable({ contacts }: ContactsTableProps) {
                   id="name"
                   {...form.register("name")}
                 />
-              </div>
-              <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   className="col-span-3"
                   id="email"
                   {...form.register("email")}
                 />
-              </div>
-              <div className="grid grid-cols-4 items-center text-right gap-3">
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
                   className="col-span-3"
