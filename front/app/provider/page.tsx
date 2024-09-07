@@ -1,3 +1,4 @@
+import CrudTable from "@/components/ui/crud-table";
 import { Contact } from "../contact/page";
 import ProviderTable, { ProviderWithContactName } from "./provider-table";
 
@@ -44,7 +45,8 @@ export default async function Providers() {
 
   return (
     <main>
-      <ProviderTable providers={providers} />
+      {/* <ProviderTable providers={providers} /> */}
+      <CrudTable data={providers} />
     </main>
   );
 }
