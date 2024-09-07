@@ -14,31 +14,37 @@ async function fetchProviders(): Promise<Provider[]> {
   return res.json();
 }
 
-export default async function Providers() {
+async function fetchProvidersWithContactNames(): Promise<
+  ProviderWithContactName[]
+> {
   const providers = await fetchProviders();
-  const providersWithContactNames: ProviderWithContactName[] =
-    await Promise.all(
-      providers.map(async (provider) => {
-        // Get contact name
-        const res = await fetch(
-          `http://localhost:3333/contact/${provider.contactId}`,
-          { cache: "no-store" }
-        );
-        if (!res.ok)
-          throw new Error(`Failed to fetch contact ${provider.contactId}`);
-        const contact: Contact = await res.json();
+  return await Promise.all(
+    providers.map(async (provider) => {
+      // Get contact name
+      const res = await fetch(
+        `http://localhost:3333/contact/${provider.contactId}`,
+        { cache: "no-store" }
+      );
+      if (!res.ok)
+        throw new Error(`Failed to fetch contact ${provider.contactId}`);
+      const contact: Contact = await res.json();
 
-        return {
-          id: provider.id,
-          cnpj: provider.cnpj,
-          contactId: provider.contactId,
-          contactName: contact.name,
-        };
-      })
-    );
+      return {
+        id: provider.id,
+        cnpj: provider.cnpj,
+        contactId: provider.contactId,
+        contactName: contact.name,
+      };
+    })
+  );
+}
+
+export default async function Providers() {
+  const providers = await fetchProvidersWithContactNames();
+
   return (
     <main>
-      <ProviderTable providers={providersWithContactNames} />
+      <ProviderTable providers={providers} />
     </main>
   );
 }

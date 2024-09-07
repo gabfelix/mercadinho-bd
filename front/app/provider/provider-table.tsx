@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Provider } from "./page";
+import router from "next/router";
 
 export type ProviderWithContactName = Provider & { contactName: string };
 
@@ -41,7 +42,11 @@ export default function ProviderTable({ providers }: ProviderTableProps) {
     const res = await fetch(`http://localhost:3333/provider/${data.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, id: undefined }), // Unset the id because the backend won't have it
+      body: JSON.stringify({
+        ...data,
+        id: undefined, // Unset the id because the backend won't have it
+        contactId: data.contactId,
+      }),
     });
     if (res.ok) {
       startTransition(() => {
@@ -87,7 +92,7 @@ export default function ProviderTable({ providers }: ProviderTableProps) {
               <Input
                 className="col-span-3"
                 id="contactId"
-                {...form.register("contactId")}
+                {...form.register("contactId", { valueAsNumber: true })}
               />
             </div>
             <DialogFooter>
@@ -106,7 +111,7 @@ export default function ProviderTable({ providers }: ProviderTableProps) {
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>CNPJ</TableHead>
-                <TableHead>Nome Fornecedor</TableHead>
+                <TableHead>Nome Contato</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
