@@ -1,6 +1,7 @@
-import ContactsTable from "./contacts-table";
+import { ApiFetch } from "@/lib/utils";
+import CrudContact from "./crud-contact";
 
-export interface Contact {
+export type Contact = {
   id: number;
   name: string;
   email: string;
@@ -8,16 +9,16 @@ export interface Contact {
 }
 
 async function fetchContacts(): Promise<Contact[]> {
-  const res = await fetch("http://localhost:3333/contact", {
-    cache: "no-store",
-  });
-  return res.json();
+  const contacts = await ApiFetch('GET', 'contact', undefined, undefined, true);
+  return contacts ? contacts.json() : [];
 }
 
 export default async function Contacts() {
+  const contacts = await fetchContacts();
+
   return (
     <main>
-      <ContactsTable contacts={await fetchContacts()} />
+      <CrudContact contacts={contacts} />
     </main>
   );
 }

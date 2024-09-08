@@ -1,17 +1,18 @@
+import { ApiFetch } from "@/lib/utils";
 import { Contact } from "../contact/page";
-import ProviderTable, { ProviderWithContactName } from "./provider-table";
+import CrudProvider from "./crud-provider";
 
-export interface Provider {
+export type ProviderWithContactName = Provider & { contactName: string }
+
+export type Provider = {
   id: number;
   cnpj: string;
   contactId: number;
 }
 
 async function fetchProviders(): Promise<Provider[]> {
-  const res = await fetch("http://localhost:3333/provider", {
-    cache: "no-store",
-  });
-  return res.json();
+  const providers = await ApiFetch('GET', 'provider', undefined, undefined, true);
+  return providers ? providers.json() : [];
 }
 
 async function fetchProvidersWithContactNames(): Promise<
@@ -21,11 +22,8 @@ async function fetchProvidersWithContactNames(): Promise<
   return await Promise.all(
     providers.map(async (provider) => {
       // Get contact name
-      const res = await fetch(
-        `http://localhost:3333/contact/${provider.contactId}`,
-        { cache: "no-store" }
-      );
-      if (!res.ok)
+      const res = await ApiFetch('GET', `contact/${provider.contactId}`, undefined, undefined, true);
+      if (!res?.ok)
         throw new Error(`Failed to fetch contact ${provider.contactId}`);
       const contact: Contact = await res.json();
 
@@ -44,7 +42,7 @@ export default async function Providers() {
 
   return (
     <main>
-      <ProviderTable providers={providers} />
+      <CrudProvider providers={providers} />
     </main>
   );
 }
