@@ -13,7 +13,7 @@ export type CrudTableProps = {
     title?: string,
     data: ObjectWithId[],
     onCreate: (data: any) => void,
-    onUpdate: (data: any) => void,
+    onUpdate: (data: any) => void, // TODO: Change this so that it's (id: number, data: any) and remove id from data
     onRemove: (id: number) => void,
     tableHiddenKeys?: string[],
     formHiddenKeys?: string[],

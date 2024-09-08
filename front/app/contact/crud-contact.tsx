@@ -18,7 +18,7 @@ export default function CrudContact({ contacts }: { contacts: Contact[] }) {
 
     const onCreate = (data: any) => ApiFetch('POST', 'contact', parseFormData(data), router);
     const onUpdate = (data: any) => ApiFetch('PATCH', `contact/${data.id}`, parseFormData(data), router);
-    const onRemove = (data: any) => ApiFetch('DELETE', `contact/${data.id}`, router);
+    const onRemove = (id: number) => ApiFetch('DELETE', `contact/${id}`, undefined, router);
 
     return (
         <CrudTable
