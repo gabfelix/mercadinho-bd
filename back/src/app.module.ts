@@ -8,10 +8,13 @@ import { ContactController } from './contact/contact.controller';
 import { ContactModule } from './contact/contact.module';
 import { ProviderService } from './provider/provider.service';
 import { ProviderModule } from './provider/provider.module';
+import { ProductService } from './product/product.service';
+import { ProductController } from './product/product.controller';
+import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [UserModule, ContactModule, ProviderModule],
-  controllers: [AppController, ContactController],
-  providers: [AppService, PrismaService, ContactService, ProviderService],
+  imports: [UserModule, ContactModule, ProviderModule, ProductModule],
+  controllers: [AppController, ContactController, ProductController],
+  providers: [AppService, PrismaService, ContactService, ProviderService, ProductService],
 })
 export class AppModule {}

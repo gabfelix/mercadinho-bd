@@ -1,17 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Contact, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ContactService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async one(id: number): Promise<Contact> {
     const where: Prisma.ContactWhereUniqueInput = { id };
-    const contact = await this.prismaService.contact.findUnique({
+    const contact = await this.prisma.contact.findUnique({
       where,
     });
-    if (!contact) throw new BadRequestException('Contato não encontrado');
+    if (!contact) throw new NotFoundException('Contato não encontrado');
     return contact;
   }
 
@@ -21,7 +25,7 @@ export class ContactService {
     orderBy?: Prisma.ContactOrderByWithRelationInput;
   }): Promise<Contact[]> {
     const { cursor, where, orderBy } = params;
-    const contacts = await this.prismaService.contact.findMany({
+    const contacts = await this.prisma.contact.findMany({
       cursor,
       where,
       orderBy,
@@ -30,7 +34,7 @@ export class ContactService {
   }
 
   async create(data: Prisma.ContactCreateInput): Promise<Contact> {
-    const createdContact = await this.prismaService.contact
+    const createdContact = await this.prisma.contact
       .create({ data })
       .catch((e) => {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -48,7 +52,7 @@ export class ContactService {
   }
 
   async update(id: number, data: Prisma.ContactUpdateInput): Promise<Contact> {
-    const updatedContact = await this.prismaService.contact
+    const updatedContact = await this.prisma.contact
       .update({
         where: { id },
         data,
@@ -73,7 +77,7 @@ export class ContactService {
   }
 
   async delete(id: number): Promise<Contact> {
-    const deletedContact = await this.prismaService.contact
+    const deletedContact = await this.prisma.contact
       .delete({
         where: { id },
       })

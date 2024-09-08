@@ -27,6 +27,11 @@ export function Navbar() {
             Fornecedores
           </NavigationMenuLink>
         </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink href="/product" className={itemStyle}>
+            Produtos
+          </NavigationMenuLink>
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
