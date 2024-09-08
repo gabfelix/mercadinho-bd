@@ -2,8 +2,9 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import { useFormContext } from "react-hook-form";
-import { DialogTrigger } from "./dialog";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
+import GenericFormFields from "./form-fields";
 
 type ObjectWithId = Object & { id: number }
 
@@ -15,23 +16,44 @@ export type CrudTableProps = {
 /** Table component with all CRUD plug-in functionalities (via props) for any Object */
 export default function CrudTable({ title, data }: CrudTableProps) {
     const router = useRouter();
-    // const { register, handleSubmit, formState: { errors } } = useFormContext();
+    const form = useForm();
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-4">
             {title && <h1 className="text-3xl font-bold">Fornecedores</h1>}
-            <code>
-                <pre>{JSON.stringify(data)}</pre>
-            </code>
-            <GenericObjectTable data={data} onRowClick={() => console.log('goofy')} />
-        </div>
+            <Dialog>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Foo</DialogTitle>
+                        <DialogDescription>foo bar</DialogDescription>
+                    </DialogHeader>
+                    <FormProvider {...form}>
+                        <GenericFormFields />
+                    </FormProvider>
+                    <DialogFooter>
+                        Something
+                    </DialogFooter>
+                </DialogContent>
+                <GenericObjectTable
+                    data={data}
+                    triggersUpdateDialog
+                    onRowClick={(object) => {
+                        const keys = Object.keys(object);
+                        keys.map((key) => {
+                            if (!(key in object)) return;
+                            form.setValue(key, object[key]);
+                        })
+                    }}
+                    {...form} />
+            </Dialog>
+        </div >
     )
 }
 
 type GenericObjectTableProps = {
     data: ObjectWithId[],
     triggersUpdateDialog?: true,
-    onRowClick?: (object: Object) => void,
+    onRowClick?: (object: any) => void,
 }
 
 function GenericObjectTable({ data, triggersUpdateDialog, onRowClick }: GenericObjectTableProps) {
