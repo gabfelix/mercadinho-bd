@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { startTransition } from "react";
 import { ProviderWithContactName } from "./page";
 
-
 export default function CrudProvider({ providers }: { providers: ProviderWithContactName[] }) {
   const router = useRouter();
 

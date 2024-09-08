@@ -23,15 +23,15 @@ export type CrudTableProps = {
 export default function CrudTable({
     title,
     data,
-    tableHiddenKeys,
-    formHiddenKeys,
+    tableHiddenKeys = [],
+    formHiddenKeys = [],
     onCreate,
     onRemove,
     onUpdate
 }: CrudTableProps) {
     if (data.length === 0) return;
 
-    if (formHiddenKeys) formHiddenKeys.push('id') // We never want the id in a form
+    formHiddenKeys.push('id') // We never want the id in a form
 
     // Generate form and default values
     let defaultValues = {} as any;
@@ -45,7 +45,7 @@ export default function CrudTable({
     return (
         <FormProvider {...form}>
             <div className="p-6 max-w-4xl mx-auto space-y-4">
-                {title && <h1 className="text-3xl font-bold">Fornecedores</h1>}
+                {title && <h1 className="text-3xl font-bold">{title}</h1>}
                 <div className="flex items-center justify-end">
                     <CreateDialog
                         title={title}
