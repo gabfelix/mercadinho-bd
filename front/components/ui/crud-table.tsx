@@ -31,7 +31,9 @@ export default function CrudTable({
     onUpdate
 }: CrudTableProps) {
     if (data.length === 0) return;
+
     const router = useRouter();
+    if (formHiddenKeys) formHiddenKeys.push('id') // We never want the id in a form
 
     // Generate form and default values
     let defaultValues = {} as any;
