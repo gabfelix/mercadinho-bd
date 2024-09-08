@@ -1,5 +1,4 @@
 import { ApiFetch } from "@/lib/utils";
-import ContactsTable from "./contacts-table";
 import CrudContact from "./crud-contact";
 
 export type Contact = {
