@@ -1,12 +1,11 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useRouter } from "next/navigation";
+import { PlusCircle, Trash } from "lucide-react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { Button } from "./button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
 import GenericFormFields from "./form-fields";
-import { Button } from "./button";
-import { PlusCircle, Trash } from "lucide-react";
 
 type ObjectWithId = Object & { id: number }
 
@@ -32,7 +31,6 @@ export default function CrudTable({
 }: CrudTableProps) {
     if (data.length === 0) return;
 
-    const router = useRouter();
     if (formHiddenKeys) formHiddenKeys.push('id') // We never want the id in a form
 
     // Generate form and default values
