@@ -25,8 +25,49 @@ model Contact {
 }
 
 model Provider {
-  id        Int     @id @default(autoincrement())
-  cnpj      String  @unique
-  contact   Contact @relation(fields: [contactId], references: [id])
+  id        Int       @id @default(autoincrement())
+  cnpj      String    @unique
+  contact   Contact   @relation(fields: [contactId], references: [id])
   contactId Int
+  Product   Product[]
+}
+
+model Customer {
+  id    Int    @id @default(autoincrement())
+  name  String
+  cpf   String
+  sales Sale[]
+}
+
+model Sale {
+  id           Int           @id @default(autoincrement())
+  date         DateTime
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  customerId   Int
+  saleProducts SaleProduct[]
+}
+
+model SaleProduct {
+  id     Int  @id @default(autoincrement())
+  amount Int
+  price  Int
+  Sale   Sale @relation(fields: [saleId], references: [id])
+  saleId Int
+}
+
+model Product {
+  id             Int               @id @default(autoincrement())
+  name           String
+  amountInStock  Int
+  suggestedPrice Int
+  provider       Provider          @relation(fields: [providerId], references: [id])
+  providerId     Int
+  categories     ProductCategory[]
+}
+
+model ProductCategory {
+  id           Int     @id @default(autoincrement())
+  categoryName String
+  Product      Product @relation(fields: [productId], references: [id])
+  productId    Int
 }
