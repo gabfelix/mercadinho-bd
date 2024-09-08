@@ -5,10 +5,14 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "./input";
 import { Label } from "./label";
 
-export default function GenericFormFields(): JSX.Element {
+type GenericFormFieldsProps = {
+    hiddenKeys?: string[]
+}
+
+export default function GenericFormFields({ hiddenKeys }: GenericFormFieldsProps): JSX.Element {
     const form = useFormContext();
     if (!form) return <></>;
-    const keys = Object.keys(form.getValues());
+    const keys = Object.keys(form.getValues()).filter((key) => !hiddenKeys?.includes(key));
 
     return (
         <div className="grid grid-cols-4 items-center text-right gap-3">

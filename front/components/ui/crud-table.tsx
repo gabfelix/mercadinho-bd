@@ -11,11 +11,12 @@ type ObjectWithId = Object & { id: number }
 export type CrudTableProps = {
     title?: string,
     data: ObjectWithId[]
-    hiddenKeys?: string[]
+    tableHiddenKeys?: string[]
+    formHiddenKeys?: string[]
 }
 
 /** Table component with all CRUD plug-in functionalities (via props) for any Object */
-export default function CrudTable({ title, data, hiddenKeys }: CrudTableProps) {
+export default function CrudTable({ title, data, tableHiddenKeys, formHiddenKeys }: CrudTableProps) {
     const router = useRouter();
     const form = useForm();
 
@@ -29,7 +30,7 @@ export default function CrudTable({ title, data, hiddenKeys }: CrudTableProps) {
                         <DialogDescription>foo bar</DialogDescription>
                     </DialogHeader>
                     <FormProvider {...form}>
-                        <GenericFormFields />
+                        <GenericFormFields hiddenKeys={formHiddenKeys} />
                     </FormProvider>
                     <DialogFooter>
                         Something
@@ -45,7 +46,7 @@ export default function CrudTable({ title, data, hiddenKeys }: CrudTableProps) {
                             form.setValue(key, object[key]);
                         })
                     }}
-                    hiddenKeys={hiddenKeys}
+                    hiddenKeys={tableHiddenKeys}
                     {...form} />
             </Dialog>
         </div >
@@ -63,7 +64,7 @@ function GenericObjectTable({ data, triggersUpdateDialog, onRowClick, hiddenKeys
     if (data.length === 0) return;
 
     const form = useFormContext();
-    const keys = Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key))
+    const keys = Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key));
     console.log(hiddenKeys);
     console.log(keys);
 
