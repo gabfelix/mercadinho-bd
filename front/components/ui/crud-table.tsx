@@ -11,10 +11,11 @@ type ObjectWithId = Object & { id: number }
 export type CrudTableProps = {
     title?: string,
     data: ObjectWithId[]
+    hiddenKeys?: string[]
 }
 
 /** Table component with all CRUD plug-in functionalities (via props) for any Object */
-export default function CrudTable({ title, data }: CrudTableProps) {
+export default function CrudTable({ title, data, hiddenKeys }: CrudTableProps) {
     const router = useRouter();
     const form = useForm();
 
@@ -44,6 +45,7 @@ export default function CrudTable({ title, data }: CrudTableProps) {
                             form.setValue(key, object[key]);
                         })
                     }}
+                    hiddenKeys={hiddenKeys}
                     {...form} />
             </Dialog>
         </div >
@@ -53,14 +55,17 @@ export default function CrudTable({ title, data }: CrudTableProps) {
 type GenericObjectTableProps = {
     data: ObjectWithId[],
     triggersUpdateDialog?: true,
+    hiddenKeys?: string[],
     onRowClick?: (object: any) => void,
 }
 
-function GenericObjectTable({ data, triggersUpdateDialog, onRowClick }: GenericObjectTableProps) {
+function GenericObjectTable({ data, triggersUpdateDialog, onRowClick, hiddenKeys }: GenericObjectTableProps) {
     if (data.length === 0) return;
 
     const form = useFormContext();
-    const keys = Object.keys(data[0]);
+    const keys = Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key))
+    console.log(hiddenKeys);
+    console.log(keys);
 
     return (
         <div className="border rounded-lg p-2">

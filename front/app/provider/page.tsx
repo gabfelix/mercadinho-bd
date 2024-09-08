@@ -46,7 +46,7 @@ export default async function Providers() {
   return (
     <main>
       {/* <ProviderTable providers={providers} /> */}
-      <CrudTable data={providers} />
+      <CrudTable data={providers} hiddenKeys={['contactId']} />
     </main>
   );
 }
