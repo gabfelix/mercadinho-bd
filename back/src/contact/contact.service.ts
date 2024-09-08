@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class ContactService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async one(id: number): Promise<Contact> {
     const where: Prisma.ContactWhereUniqueInput = { id };
