@@ -1,8 +1,10 @@
 import CrudTable from "@/components/ui/crud-table";
 import { Contact } from "../contact/page";
-import ProviderTable, { ProviderWithContactName } from "./provider-table";
+import CrudProvider from "./crud-provider";
 
-export interface Provider {
+export type ProviderWithContactName = Provider & { contactName: string }
+
+export type Provider = {
   id: number;
   cnpj: string;
   contactId: number;
@@ -45,8 +47,7 @@ export default async function Providers() {
 
   return (
     <main>
-      {/* <ProviderTable providers={providers} /> */}
-      <CrudTable data={providers} tableHiddenKeys={['contactId']} formHiddenKeys={['contactName']} />
+      <CrudProvider providers={providers} />
     </main>
   );
 }

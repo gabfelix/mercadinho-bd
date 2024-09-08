@@ -17,8 +17,6 @@ export default function GenericFormFields({ hiddenKeys }: GenericFormFieldsProps
     return (
         <div className="grid grid-cols-4 items-center text-right gap-3">
             {keys.map((key) => {
-                const valueAsNumber = !isNaN(Number(form.getValues(key)));
-
                 return (
                     <React.Fragment key={`${key}-container`}>
                         <Label key={`${key}-label`} htmlFor={key}>{key}</Label>
