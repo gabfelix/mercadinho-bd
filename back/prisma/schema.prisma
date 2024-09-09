@@ -58,6 +58,7 @@ model SaleProduct {
 
 model Product {
   id             Int               @id @default(autoincrement())
+  image          Bytes?
   name           String
   amountInStock  Int
   suggestedPrice Float
