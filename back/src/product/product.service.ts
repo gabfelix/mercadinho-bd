@@ -118,22 +118,25 @@ export class ProductService {
     const categoriesToConnect = await this.prisma.category.findMany({
       where: { name: { in: categories } },
     });
-    // Try to connect all categories. Ignore if already connected
-    try {
-      await this.prisma.productCategory.createMany({
-        data: categoriesToConnect.map((category) => ({
-          categoryId: category.id,
-          productId: id,
-        })),
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          this.logger.warn(
-            `Error connecting categories to product: ${e.message}. Ignoring`,
-          );
-        } else {
-          throw e;
+    // Try to connect all categories. Ignore if already connected and keep going
+    for (const category of categoriesToConnect) {
+      try {
+        await this.prisma.productCategory.create({
+          data: {
+            categoryId: category.id,
+            productId: id,
+          },
+        });
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2002') {
+            this.logger.warn(
+              `Error connecting category to product: ${e.message}. Ignoring`,
+            );
+            continue;
+          } else {
+            throw e;
+          }
         }
       }
     }
