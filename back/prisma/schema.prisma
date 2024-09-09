@@ -8,14 +8,6 @@ generator client {
   previewFeatures = ["views"]
 }
 
-model User {
-  id             Int     @id @default(autoincrement())
-  email          String  @unique
-  name           String?
-  profilePicture Bytes?
-  password       String
-}
-
 model Contact {
   id        Int        @id @default(autoincrement())
   name      String
@@ -33,11 +25,29 @@ model Provider {
   Product   Product[]
 }
 
+model Employee {
+  id        Int        @id @default(autoincrement())
+  hireDate  DateTime
+  job       String
+  name      String
+  deliveris Delivery[]
+}
+
+model Delivery {
+  id         Int      @id @default(autoincrement())
+  quantity   Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+}
+
 model Customer {
-  id    Int    @id @default(autoincrement())
-  name  String
-  cpf   String
-  sales Sale[]
+  id      Int    @id @default(autoincrement())
+  name    String
+  address String
+  cpf     String
+  sales   Sale[]
 }
 
 model Sale {
@@ -57,19 +67,33 @@ model SaleProduct {
 }
 
 model Product {
-  id             Int               @id @default(autoincrement())
-  image          Bytes?
-  name           String
-  amountInStock  Int
-  suggestedPrice Float
-  provider       Provider          @relation(fields: [providerId], references: [id])
-  providerId     Int
-  categories     ProductCategory[]
+  id                Int               @id @default(autoincrement())
+  image             Bytes?
+  name              String
+  amountInStock     Int
+  suggestedPrice    Float
+  provider          Provider          @relation(fields: [providerId], references: [id])
+  providerId        Int
+  productCategories ProductCategory[]
+  deliveries        Delivery[]
+
+  @@map("products")
 }
 
 model ProductCategory {
-  id           Int     @id @default(autoincrement())
-  categoryName String
-  Product      Product @relation(fields: [productId], references: [id])
-  productId    Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  @@id([productId, categoryId])
+  @@map("product_category")
+}
+
+model Category {
+  id              Int               @id @default(autoincrement())
+  name            String
+  productCategory ProductCategory[]
+
+  @@map("categories")
 }
