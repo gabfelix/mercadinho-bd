@@ -7,6 +7,7 @@ import {
 import { Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { async } from 'rxjs';
 
 @Injectable()
 export class ProductService {
@@ -63,7 +64,9 @@ export class ProductService {
   }
 
   async update(id: number, data: UpdateProductDto): Promise<Product> {
-    const { name, amountInStock, suggestedPrice, providerId } = data;
+    const { name, amountInStock, suggestedPrice, providerId, categories } =
+      data;
+
     const updatedProduct = await this.prisma.product
       .update({
         where: { id },
@@ -89,6 +92,63 @@ export class ProductService {
       });
     if (!updatedProduct)
       throw new BadRequestException('Erro ao atualizar produto');
+
+    // Connect categories (create if not existing)
+    const existingCategories = await this.prisma.category.findMany({
+      where: { name: { in: categories } },
+    });
+
+    // const unrelatedExistingCategories = this.prisma.productCategory.findMany({
+    //   where: {
+    //     productId: { not: id },
+    //     categoryId: { in: existingCategories.map((c) => c.id) },
+    //   },
+    // });
+    // By definition, new categories are unrelated
+    const newCategories = categories.filter(
+      (c) => !existingCategories.map((c) => c.name).includes(c),
+    );
+    await Promise.all(
+      newCategories.map(async (name) => {
+        await this.prisma.category.create({
+          data: { name },
+        });
+      }),
+    );
+    const categoriesToConnect = await this.prisma.category.findMany({
+      where: { name: { in: categories } },
+    });
+    // Try to connect all categories. Ignore if already connected
+    try {
+      await this.prisma.productCategory.createMany({
+        data: categoriesToConnect.map((category) => ({
+          categoryId: category.id,
+          productId: id,
+        })),
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          this.logger.warn(
+            `Error connecting categories to product: ${e.message}. Ignoring`,
+          );
+        } else {
+          throw e;
+        }
+      }
+    }
+    const categoriesToDisconnect = await this.prisma.productCategory.findMany({
+      where: {
+        productId: id,
+        categoryId: { notIn: categoriesToConnect.map((c) => c.id) },
+      },
+    });
+    await this.prisma.productCategory.deleteMany({
+      where: {
+        productId: id,
+        categoryId: { in: categoriesToDisconnect.map((c) => c.categoryId) },
+      },
+    });
 
     return updatedProduct;
   }
