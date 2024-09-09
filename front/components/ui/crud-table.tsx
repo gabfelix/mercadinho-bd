@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from "./dialog";
 import GenericFormFields from "./form-fields";
+import Image from "next/image";
 
 type ObjectWithId = Object & { id: number };
 
@@ -63,7 +64,9 @@ export default function CrudTable({
   return (
     <FormProvider {...form}>
       <div className="p-6 max-w-4xl mx-auto space-y-4">
-        {title && <h1 className="text-3xl font-bold">{title}</h1>}
+        {title !== "Desconhecido" && (
+          <h1 className="text-3xl font-bold">{title}</h1>
+        )}
         <div className="flex items-center justify-end">
           <CreateDialog
             title={title}
@@ -232,11 +235,25 @@ function GenericObjectTable({
                   onRowClick?.(object);
                 }}
               >
-                {keys.map((key) => (
-                  <TableCell key={`${object.id}-${key}`}>
-                    {object[key]}
-                  </TableCell>
-                ))}
+                {keys.map((key) => {
+                  const isImage = key.toLowerCase().search("image") !== -1;
+                  return (
+                    <TableCell key={`${object.id}-${key}`}>
+                      {isImage ? (
+                        <Image
+                          className="h-10 w-10"
+                          src={object.image}
+                          alt=""
+                          width={30}
+                          height={30}
+                          unoptimized
+                        />
+                      ) : (
+                        object[key]
+                      )}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             );
             if (triggersUpdateDialog) {

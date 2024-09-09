@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, Product } from '@prisma/client';
@@ -10,6 +11,8 @@ import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 @Injectable()
 export class ProductService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private readonly logger = new Logger();
 
   async one(id: number): Promise<Product> {
     const where: Prisma.ProductWhereUniqueInput = { id };
@@ -107,5 +110,13 @@ export class ProductService {
       throw new BadRequestException('Erro ao deletar produto');
 
     return deletedProduct;
+  }
+
+  async setImage(id: number, file: Express.Multer.File) {
+    this.logger.log(`received file has size: ${file.size}`);
+    return await this.prisma.product.update({
+      where: { id },
+      data: { image: file.buffer },
+    });
   }
 }

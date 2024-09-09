@@ -7,10 +7,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '@prisma/client';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('product')
 export class ProductController {
@@ -37,6 +40,15 @@ export class ProductController {
     @Body() prismaUpdateData: UpdateProductDto,
   ): Promise<Product> {
     return this.productService.update(id, prismaUpdateData);
+  }
+
+  @Post(':id/set-image')
+  @UseInterceptors(FileInterceptor('file'))
+  async setImage(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.productService.setImage(id, file);
   }
 
   @Delete(':id')
