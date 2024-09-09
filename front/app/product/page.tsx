@@ -71,7 +71,7 @@ export default async function Products() {
       <CrudProduct
         products={products}
         tableHiddenKeys={["providerId"]}
-        formHiddenKeys={["providerName"]}
+        formHiddenKeys={["providerName", "image"]}
       />
     </main>
   );
