@@ -234,6 +234,7 @@ function GenericObjectTable({
               >
                 {keys.map((key) => {
                   const isImage = key.toLowerCase().search("image") !== -1;
+                  if (isImage) console.log(object.image);
                   return (
                     <TableCell key={`${object.id}-${key}`}>
                       {isImage ? <img src={object.image} /> : object[key]}

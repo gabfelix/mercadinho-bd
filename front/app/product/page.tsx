@@ -44,9 +44,7 @@ async function fetchProductsWithProviderName(): Promise<
       // Convert image (if present) to base64
       if (product.image) product.image = Buffer.from(product.image); // I don't know why I have to do this but it works
       const productImageSource = product.image
-        ? `data:image/jpeg;base64,${JSON.stringify(
-            product.image.toString("base64")
-          )}`
+        ? `data:image/jpeg;base64,${product.image.toString("base64")}`
         : DefaultProductImage.src;
 
       // Return product with provider name
