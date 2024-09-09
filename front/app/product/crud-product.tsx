@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Product, ProductWithProviderName } from "./page";
 
 type CrudProductProps = {
-  products: Product[];
+  products: ProductWithProviderName[];
   tableHiddenKeys?: (keyof Product)[];
   formHiddenKeys?: (keyof ProductWithProviderName)[];
 };

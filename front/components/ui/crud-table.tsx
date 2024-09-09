@@ -232,11 +232,14 @@ function GenericObjectTable({
                   onRowClick?.(object);
                 }}
               >
-                {keys.map((key) => (
-                  <TableCell key={`${object.id}-${key}`}>
-                    {object[key]}
-                  </TableCell>
-                ))}
+                {keys.map((key) => {
+                  const isImage = key.toLowerCase().search("image") !== -1;
+                  return (
+                    <TableCell key={`${object.id}-${key}`}>
+                      {isImage ? <img src={object.image} /> : object[key]}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             );
             if (triggersUpdateDialog) {
