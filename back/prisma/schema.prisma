@@ -26,11 +26,11 @@ model Provider {
 }
 
 model Employee {
-  id        Int        @id @default(autoincrement())
-  hireDate  DateTime
-  job       String
-  name      String
-  deliveris Delivery[]
+  id         Int        @id @default(autoincrement())
+  hireDate   DateTime
+  job        String
+  name       String
+  deliveries Delivery[]
 }
 
 model Delivery {

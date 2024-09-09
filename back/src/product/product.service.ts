@@ -7,7 +7,6 @@ import {
 import { Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
-import { async } from 'rxjs';
 
 @Injectable()
 export class ProductService {
