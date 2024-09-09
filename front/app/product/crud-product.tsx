@@ -3,9 +3,19 @@
 import CrudTable from "@/components/ui/crud-table";
 import { ApiFetch } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { Product } from "./page";
+import { Product, ProductWithProviderName } from "./page";
 
-export default function CrudProduct({ products }: { products: Product[] }) {
+type CrudProductProps = {
+  products: Product[];
+  tableHiddenKeys?: (keyof Product)[];
+  formHiddenKeys?: (keyof ProductWithProviderName)[];
+};
+
+export default function CrudProduct({
+  products,
+  tableHiddenKeys,
+  formHiddenKeys,
+}: CrudProductProps) {
   const router = useRouter();
 
   const parseFormData = (providerFormData: any) => {
@@ -37,13 +47,13 @@ export default function CrudProduct({ products }: { products: Product[] }) {
 
   return (
     <CrudTable
-      title="Fornecedor"
+      title="Produto"
       onCreate={onCreate}
       onUpdate={onUpdate}
       onRemove={onRemove}
       data={products}
-      tableHiddenKeys={["contactId"]}
-      formHiddenKeys={["contactName"]}
+      tableHiddenKeys={tableHiddenKeys}
+      formHiddenKeys={formHiddenKeys}
     />
   );
 }

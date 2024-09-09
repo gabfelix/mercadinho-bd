@@ -26,6 +26,7 @@ model Contact {
 
 model Provider {
   id        Int       @id @default(autoincrement())
+  name      String
   cnpj      String    @unique
   contact   Contact   @relation(fields: [contactId], references: [id])
   contactId Int
@@ -59,7 +60,7 @@ model Product {
   id             Int               @id @default(autoincrement())
   name           String
   amountInStock  Int
-  suggestedPrice Int
+  suggestedPrice Float
   provider       Provider          @relation(fields: [providerId], references: [id])
   providerId     Int
   categories     ProductCategory[]

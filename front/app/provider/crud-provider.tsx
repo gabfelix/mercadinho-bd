@@ -3,14 +3,20 @@
 import CrudTable from "@/components/ui/crud-table";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
-import { ProviderWithContactName } from "./page";
+import { Provider, ProviderWithContactName } from "./page";
 import { ApiFetch } from "@/lib/utils";
+
+type CrudProviderProps = {
+  providers: Provider[];
+  tableHiddenKeys?: (keyof ProviderWithContactName)[];
+  formHiddenKeys?: (keyof ProviderWithContactName)[];
+};
 
 export default function CrudProvider({
   providers,
-}: {
-  providers: ProviderWithContactName[];
-}) {
+  tableHiddenKeys,
+  formHiddenKeys,
+}: CrudProviderProps) {
   const router = useRouter();
 
   const parseFormData = (providerFormData: any) => {
@@ -44,8 +50,8 @@ export default function CrudProvider({
       onUpdate={onUpdate}
       onRemove={onRemove}
       data={providers}
-      tableHiddenKeys={["contactId"]}
-      formHiddenKeys={["contactName"]}
+      tableHiddenKeys={tableHiddenKeys}
+      formHiddenKeys={formHiddenKeys}
     />
   );
 }
