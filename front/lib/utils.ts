@@ -4,10 +4,10 @@ import { startTransition } from "react";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const BACKEND_URL = "http://localhost:3333"
+export const BACKEND_URL = "http://localhost:3333";
 
 /** Helper function for calling our API.
  *  The backend url is hardcoded. Check source code for details.
@@ -18,28 +18,26 @@ export const BACKEND_URL = "http://localhost:3333"
  * @param forbidCache - Whether to disable caching of fetches (used to make table show)
  */
 export function ApiFetch(
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
+  method: "GET" | "POST" | "PATCH" | "DELETE",
   route: string,
   data?: any,
   router?: AppRouterInstance,
   forbidCache: boolean = true,
+  isJSON: boolean = true
 ) {
-  return fetch(`${BACKEND_URL}${route[0] === '/' ? route : `/${route}`}`,
-    {
-      method,
-      headers: { "Content-Type": "application/json" },
-      ...(data && { body: JSON.stringify(data) }),
-      ...(forbidCache && { cache: "no-store" })
-    }
-  )
-    .then((res) => {
-      if (res.ok) {
-        if (router) {
-          startTransition(() => {
-            router.refresh();
-          });
-        }
-        return res;
+  return fetch(`${BACKEND_URL}${route[0] === "/" ? route : `/${route}`}`, {
+    method,
+    ...(isJSON && { headers: { "Content-Type": "application/json" } }),
+    ...(data && { body: isJSON ? JSON.stringify(data) : data }),
+    ...(forbidCache && { cache: "no-store" }),
+  }).then((res) => {
+    if (res.ok) {
+      if (router) {
+        startTransition(() => {
+          router.refresh();
+        });
       }
-    });
+      return res;
+    }
+  });
 }

@@ -1,8 +1,7 @@
 import { ApiFetch } from "@/lib/utils";
-import { Contact } from "../contact/page";
-import CrudProduct from "./crud-product";
-import { Provider } from "../provider/page";
 import DefaultProductImage from "../../public/miojo.jpg";
+import { Provider } from "../provider/page";
+import CrudProduct from "./crud-product";
 
 export type ProductWithProviderName = {
   id: number;
