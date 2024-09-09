@@ -56,7 +56,11 @@ export default async function Providers() {
 
   return (
     <main>
-      <CrudProvider providers={providers} />
+      <CrudProvider
+        providers={providers}
+        tableHiddenKeys={["contactId"]}
+        formHiddenKeys={["contactName"]}
+      />
     </main>
   );
 }
