@@ -27,19 +27,31 @@ export class ProviderController {
   @Post()
   async create(
     @Body()
-    { cnpj, contactId }: { name: string; cnpj: string; contactId: number },
+    {
+      name,
+      cnpj,
+      contactId,
+    }: {
+      name: string;
+      cnpj: string;
+      contactId: number;
+    },
   ) {
-    return this.providerService.create(cnpj, contactId);
+    return this.providerService.create(name, cnpj, contactId);
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body()
-    { cnpj, contactId }: { cnpj: string; contactId: number },
+    {
+      name,
+      cnpj,
+      contactId,
+    }: { name?: string; cnpj?: string; contactId?: number },
   ) {
-    if (!cnpj && !contactId) return this.providerService.one(id);
-    return this.providerService.update(id, { cnpj, contactId });
+    if (!name && !cnpj && !contactId) return this.providerService.one(id); // no-op
+    return this.providerService.update(id, { name, cnpj, contactId });
   }
 
   @Delete(':id')
