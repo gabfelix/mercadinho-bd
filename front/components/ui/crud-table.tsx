@@ -209,8 +209,6 @@ function GenericObjectTable({
   onRowClick,
   hiddenKeys,
 }: GenericObjectTableProps) {
-  if (data.length === 0) return;
-
   const form = useFormContext();
   const keys = Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key));
 
