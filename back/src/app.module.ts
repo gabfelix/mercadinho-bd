@@ -11,9 +11,10 @@ import { ProductService } from './product/product.service';
 import { ProductController } from './product/product.controller';
 import { ProductModule } from './product/product.module';
 import { EmployeeModule } from './employee/employee.module';
+import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
-  imports: [ContactModule, ProviderModule, ProductModule, EmployeeModule],
+  imports: [ContactModule, ProviderModule, ProductModule, EmployeeModule, DeliveryModule],
   controllers: [AppController, ContactController, ProductController],
   providers: [
     AppService,
