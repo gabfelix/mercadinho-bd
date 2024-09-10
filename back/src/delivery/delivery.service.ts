@@ -8,11 +8,25 @@ export class DeliveryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createDeliveryDto: CreateDeliveryDto) {
-    return await this.prisma.delivery.create({
-      data: {
-        ...createDeliveryDto,
-        date: new Date(createDeliveryDto.date),
-      },
+    return await this.prisma.$transaction(async (tx) => {
+      const createdDelivery = await tx.delivery.create({
+        data: {
+          ...createDeliveryDto,
+          date: new Date(createDeliveryDto.date),
+        },
+      });
+
+      // Add to stock
+      await tx.product.update({
+        where: { id: createDeliveryDto.productId },
+        data: {
+          amountInStock: {
+            increment: createDeliveryDto.quantity,
+          },
+        },
+      });
+
+      return createdDelivery;
     });
   }
 
