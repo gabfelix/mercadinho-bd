@@ -46,8 +46,6 @@ export default function CrudTable({
   onRemove,
   onUpdate,
 }: CrudTableProps) {
-  if (data.length === 0) data = [];
-
   formHiddenKeys.push("id"); // We never want the id in a form
 
   // Generate form and default values
@@ -206,7 +204,7 @@ type GenericObjectTableProps = {
   onRowClick?: (object: any) => void;
 };
 
-function GenericObjectTable({
+export function GenericObjectTable({
   data,
   triggersUpdateDialog,
   onRowClick,
