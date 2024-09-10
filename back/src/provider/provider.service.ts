@@ -33,8 +33,13 @@ export class ProviderService {
     return providers;
   }
 
-  async create(cnpj: string, contactId: number): Promise<Provider> {
+  async create(
+    name: string,
+    cnpj: string,
+    contactId: number,
+  ): Promise<Provider> {
     const data: Prisma.ProviderCreateInput = {
+      name,
       cnpj,
       contact: { connect: { id: contactId } },
     };
@@ -46,6 +51,8 @@ export class ProviderService {
             const target = e.meta?.target?.[0] ?? '';
             const field = target[0].toUpperCase() + target.slice(1);
             throw new BadRequestException(`${field} já está em uso`);
+          } else {
+            throw new BadRequestException(`${e.message}`);
           }
         }
         if (e instanceof Prisma.PrismaClientValidationError) {
@@ -59,9 +66,14 @@ export class ProviderService {
 
   async update(
     id: number,
-    { cnpj, contactId }: { cnpj?: string; contactId?: number },
+    {
+      name,
+      cnpj,
+      contactId,
+    }: { name?: string; cnpj?: string; contactId?: number },
   ): Promise<Provider> {
     const data: Prisma.ProviderUpdateInput = {
+      name,
       cnpj,
       contact: contactId ? { connect: { id: contactId } } : undefined,
     };
