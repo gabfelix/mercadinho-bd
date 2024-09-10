@@ -60,11 +60,13 @@ model Sale {
 }
 
 model SaleProduct {
-  id     Int  @id @default(autoincrement())
-  amount Int
-  price  Int
-  Sale   Sale @relation(fields: [saleId], references: [id])
-  saleId Int
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  amount    Int
+  price     Float
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  saleId    Int
 }
 
 model Product {
@@ -77,8 +79,9 @@ model Product {
   providerId        Int
   productCategories ProductCategory[]
   deliveries        Delivery[]
+  saleProducts      SaleProduct[]
 
-  @@map("products")
+  @@map("Product")
 }
 
 model ProductCategory {
@@ -88,7 +91,7 @@ model ProductCategory {
   categoryId Int
 
   @@id([productId, categoryId])
-  @@map("product_category")
+  @@map("ProductCategory")
 }
 
 model Category {
@@ -96,5 +99,5 @@ model Category {
   name            String            @unique
   productCategory ProductCategory[]
 
-  @@map("categories")
+  @@map("Category")
 }
