@@ -92,6 +92,7 @@ export class ProductService {
     if (!updatedProduct)
       throw new BadRequestException('Erro ao atualizar produto');
 
+    if (!categories) return;
     // Connect categories (create if not existing)
     const existingCategories = await this.prisma.category.findMany({
       where: { name: { in: categories } },

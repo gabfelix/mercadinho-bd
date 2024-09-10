@@ -99,8 +99,6 @@ function UploadImageDialog(): JSX.Element {
     setSelectedImage(files[0]);
   };
 
-  const onAcceptClick = () => setSelectedImage(null);
-
   const onSubmit = async ({ id }: { id: number }) => {
     if (!selectedImage) {
       console.error("Image not selected");
@@ -118,6 +116,12 @@ function UploadImageDialog(): JSX.Element {
       true,
       false
     );
+  };
+
+  const onAcceptClick = async () => {
+    await form.handleSubmit(onSubmit)();
+    form.reset();
+    setSelectedImage(null);
   };
 
   const dropzoneConfig = {
