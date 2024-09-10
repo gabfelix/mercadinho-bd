@@ -15,4 +15,9 @@ export class SaleController {
   async findAll() {
     return await this.saleService.findAll();
   }
+
+  @Post('low')
+  async low() {
+    return await this.saleService.low();
+  }
 }
