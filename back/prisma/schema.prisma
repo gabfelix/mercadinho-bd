@@ -36,14 +36,14 @@ model Customer {
   id    Int    @id @default(autoincrement())
   name  String
   cpf   String
-  sales Sale[]
+  // sales Sale[]
 }
 
 model Sale {
   id           Int           @id @default(autoincrement())
   date         DateTime
-  customer     Customer      @relation(fields: [customerId], references: [id])
-  customerId   Int
+  // customer     Customer      @relation(fields: [customerId], references: [id])
+  // customerId   Int
   saleProducts SaleProduct[]
 }
 
