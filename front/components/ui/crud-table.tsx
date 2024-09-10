@@ -213,7 +213,10 @@ function GenericObjectTable({
   hiddenKeys,
 }: GenericObjectTableProps) {
   const form = useFormContext();
-  const keys = Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key));
+  const keys =
+    data.length > 0
+      ? Object.keys(data[0]).filter((key) => !hiddenKeys?.includes(key))
+      : [];
 
   return (
     <div className="border rounded-lg p-2">
