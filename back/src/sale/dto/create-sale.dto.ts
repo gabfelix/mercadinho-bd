@@ -1,8 +1,9 @@
-import { IsDateString, IsNumber } from 'class-validator';
+import { IsArray, IsNumber } from 'class-validator';
 
 export class CreateSaleDto {
-  @IsDateString()
-  date: string;
-  // @IsNumber()
-  // customerId: number;
+  @IsNumber()
+  customerId: number;
+
+  @IsArray()
+  productData: Array<{ id: number; quantity: number; price?: number }>;
 }
