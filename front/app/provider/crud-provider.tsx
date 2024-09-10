@@ -31,6 +31,7 @@ export default function CrudProvider({
       );
 
     return {
+      name: providerFormData.name,
       cnpj: providerFormData.cnpj,
       contactId: Number(providerFormData.contactId),
     };
