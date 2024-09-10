@@ -62,15 +62,7 @@ export class SaleService {
     return await this.prisma.$queryRaw`SELECT * FROM SaleSummary`;
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} sale`;
-  }
-
-  async update(id: number, updateSaleDto: UpdateSaleDto) {
-    return `This action updates a #${id} sale`;
-  }
-
-  async remove(id: number) {
-    return `This action removes a #${id} sale`;
+  async low() {
+    return await this.prisma.$queryRaw`SELECT * FROM HighValueLowStockProducts`;
   }
 }
