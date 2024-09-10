@@ -59,7 +59,7 @@ export class SaleService {
   }
 
   async findAll() {
-    return `This action returns all sale`;
+    return await this.prisma.$queryRaw`SELECT * FROM SaleSummary`;
   }
 
   async findOne(id: number) {

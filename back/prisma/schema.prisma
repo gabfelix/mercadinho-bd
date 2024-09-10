@@ -101,3 +101,17 @@ model Category {
 
   @@map("Category")
 }
+
+view SaleSummary {
+  sale_id          Int
+  sale_date        DateTime
+  customer_id      Int
+  customer_name    String
+  product_id       Int
+  product_name     String
+  product_amount   Int
+  product_price    Float
+  total_sale_price Float
+
+  @@id([sale_id, product_id])
+}
