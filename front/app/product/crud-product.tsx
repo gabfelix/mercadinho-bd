@@ -99,6 +99,8 @@ function UploadImageDialog(): JSX.Element {
     setSelectedImage(files[0]);
   };
 
+  const onAcceptClick = () => setSelectedImage(null);
+
   const onSubmit = async ({ id }: { id: number }) => {
     if (!selectedImage) {
       console.error("Image not selected");
@@ -181,7 +183,9 @@ function UploadImageDialog(): JSX.Element {
               <Button variant="outline">Cancelar</Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button type="submit">Enviar</Button>
+              <Button type="submit" onClick={onAcceptClick}>
+                Enviar
+              </Button>
             </DialogClose>
           </DialogFooter>
         </form>
