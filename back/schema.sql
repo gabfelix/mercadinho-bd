@@ -97,3 +97,37 @@ CREATE UNIQUE INDEX "Provider_cnpj_key" ON "Provider"("cnpj");
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
+CREATE VIEW SaleSummary AS
+SELECT
+    s.id AS sale_id,
+    s.date AS sale_date,
+    c.id AS customer_id,
+    c.name AS customer_name,
+    p.id AS product_id,
+    p.name AS product_name,
+    sp.amount AS product_amount,
+    sp.price AS product_price,
+    (sp.amount * sp.price) AS total_sale_price
+FROM
+    Sale s
+JOIN
+    SaleProduct sp ON s.id = sp.saleId
+JOIN
+    Product p ON sp.productId = p.id
+JOIN
+    Customer c ON s.customerId = c.id;
+
+CREATE VIEW HighValueLowStockProducts AS
+SELECT
+    p.id AS product_id,
+    p.name AS product_name,
+    p.amountInStock AS stock_amount,
+    p.suggestedPrice AS price,
+    pr.name AS provider_name
+FROM
+    Product p
+JOIN
+    Provider pr ON p.providerId = pr.id
+WHERE
+    p.amountInStock < 10
+    AND p.suggestedPrice > 300.00;
